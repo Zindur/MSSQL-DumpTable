@@ -1,4 +1,5 @@
 
+
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DumpDataFromTable]') AND type in (N'P', N'PC'))
     DROP PROCEDURE dbo.[DumpDataFromTable]
 GO
@@ -11,7 +12,7 @@ GO
 -- =============================================
 -- Author:    Oleg Ciobanu
 -- Create date: 20171214
--- Version 1.01
+-- Version 1.02
 -- Description:
 -- dump data in 2 formats
 -- @BuildMethod = 1 INSERT INTO format
@@ -53,7 +54,7 @@ BEGIN
  
     --debug
     IF @DebugMode = 1
-        print @AsFileNAme
+        PRINT @AsFileNAme
  
         -- Create temp SP what will be responsable for generating script files
     DECLARE @PRC_WritereadFile VARCHAR(max) =
@@ -219,9 +220,8 @@ BEGIN
     -- debug
     IF @DebugMode = 1 BEGIN
         print @Sql     
+        exec (@Sql)
     END
- 
-    EXEC (@Sql)
  
     -- prepare data for cursor
  
@@ -310,7 +310,7 @@ BEGIN
             END
             -- debug
             IF @DebugMode = 1
-                PRINT @SqlInsert
+                print @SqlInsert
             EXEC PRC_WritereadFile 1 /*Add*/, '', @AsFileNAme, @SqlInsert
  
             -- we have new row
@@ -369,4 +369,5 @@ BEGIN
         EXEC PRC_WritereadFile 1 /*Add*/, '', @AsFileNAme, @SqlInsert
         SET @SqlInsert = NULL
     END
+	PRINT 'Done: ' + @AsFileNAme
 END
