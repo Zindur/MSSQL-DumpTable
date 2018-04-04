@@ -269,7 +269,7 @@ BEGIN
     IF @BuildMethod = 1
     BEGIN
     	SET @SqlInsert = 'SET NOCOUNT ON;' + CHAR(13);
-		EXEC PRC_WritereadFile 1 /*Add*/, '', @FileName, @SqlInsert
+		EXEC PRC_WritereadFile 1 /*Add*/, '', @AsFileName, @SqlInsert
         SET @SqlInsert = ''
     END
     ELSE BEGIN
@@ -278,7 +278,7 @@ BEGIN
 						+ 'SELECT *'
                         + CHAR(13) + 'FROM ('
                         + CHAR(13) + 'VALUES'
-        EXEC PRC_WritereadFile 1 /*Add*/, '', @AsFileNAme, @SqlInsert
+        EXEC PRC_WritereadFile 1 /*Add*/, '', @AsFileName, @SqlInsert
         SET @SqlInsert = NULL
     END
  
