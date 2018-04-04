@@ -11,7 +11,7 @@ GO
 -- =============================================
 -- Author:    Oleg Ciobanu
 -- Create date: 20171214
--- Version 1.0
+-- Version 1.01
 -- Description:
 -- dump data in 2 formats
 -- @BuildMethod = 1 INSERT INTO format
@@ -268,10 +268,14 @@ BEGIN
  
     IF @BuildMethod = 1
     BEGIN
+    	SET @SqlInsert = 'SET NOCOUNT ON;' + CHAR(13);
+		EXEC PRC_WritereadFile 1 /*Add*/, '', @FileName, @SqlInsert
         SET @SqlInsert = ''
     END
     ELSE BEGIN
-        SET @SqlInsert = 'SELECT *'
+	    SET @SqlInsert = 'SET NOCOUNT ON;' + CHAR(13);
+		SET @SqlInsert = @SqlInsert
+						+ 'SELECT *'
                         + CHAR(13) + 'FROM ('
                         + CHAR(13) + 'VALUES'
         EXEC PRC_WritereadFile 1 /*Add*/, '', @AsFileNAme, @SqlInsert
@@ -292,7 +296,7 @@ BEGIN
                                 + CHAR(13) + @ColumnsInsert + ')'
                                 + CHAR(13) + 'VALUES ('
                                 + @ValuesInsert
-                                + CHAR(13) + ')'
+                                + CHAR(13) + ');'
             END
             ELSE
             BEGIN
@@ -334,7 +338,10 @@ BEGIN
                                         COALESCE(@ValuesInsert + ',','') + '' + ISNULL(RTRIM(@ColumnValue),'NULL') + ''
                                     -- other types treat as string
                                     ELSE
-                                        COALESCE(@ValuesInsert + ',','') + '''' + ISNULL(RTRIM(@ColumnValue),'NULL') + ''''    
+										COALESCE(@ValuesInsert + ',','') + '''' + ISNULL(RTRIM( 
+																							-- escape single quote
+																							REPLACE(@ColumnValue, '''', '''''') 
+																							  ),'NULL') + ''''		   
                                 END
         END
  
