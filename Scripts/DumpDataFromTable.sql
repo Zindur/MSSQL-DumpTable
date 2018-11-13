@@ -243,7 +243,12 @@ BEGIN
     END
  
     EXEC (@Sql)
- 
+													    
+ -- Insert dummy rec, otherwise will not proceed the last rec :)
+INSERT INTO #tmp (rn)
+SELECT MAX(rn) +  1 
+FROM #tmp	
+													    
     IF @DebugMode = 1 BEGIN
         SELECT * FROM #tmp
     END
